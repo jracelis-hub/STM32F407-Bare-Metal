@@ -34,5 +34,45 @@ Hardware:
 |                                         |  |         \|/          |                                                      --*TIM--> TIMER          |
 |                                         |  -- *PLLN ---           |                                                                               |
 |                                         ---------------------------                                                                               |
+|                                                                                                                                                   |
+|                                                                                                                                                   |
+|                          /\                                                                                                                       |
+|                         / | <--- LSI                                                                                                              | 
+|                        /  | <--- LSE                                                                                                              |
+|   MCO1 <-- /Prescaler |   |                                                                                                                       |
+|                        \  | <--- HSI                                                                                                              |
+|                         \ | <--- HSE                                                                                                              |
+|                          \/                                                                                                                       |
+|                                                                                                                                                   |
+|                          /\                                                                                                                       |
+|                         / | <--- LSI                                                                                                              |
+|                        /  | <--- LSE                                                                                                              |
+|   MCO2 <-- /Prescaler |   |                                                                                                                       |
+|                        \  | <--- HSI                                                                                                              |
+|                         \ | <--- HSE                                                                                                              |
+|                          \/                                                                                                                       |
+|                                                                                                                                                   |
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 ```
+
+**Steps To Configure Clock:**
+
+1. Enable Sys Clock
+2. Configure Sys Clock
+	- a. Turn of other clock if used
+3. Enable Peripheral Clock
+	- AHB
+	- APB
+4. Configure Perihperal Clock
+
+To Output Clock using the Microcontroller Clock Output(MCO):
+1. Source Driving into MCO
+	- RCC Clock Configuration Register
+2. Configure specific pin for Micontroller Clock Ouput
+	- Refer GPIOs for Alternative Functions (STM32F Datasheet)
+	- a. Enable Clock For GPIOs
+
+Logical Analyzer
+
+- Connect MCO GPIO configured pin <--> Logical Analyzer Ch0
+- Connect GND Logial Analyzer <--> GND Board
