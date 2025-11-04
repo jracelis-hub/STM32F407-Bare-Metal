@@ -4,7 +4,7 @@
 #include <cstdint>
 
 /** Max Frequency:
-  * SYSClk = 168 MHz
+  * SYSClk            
   * AHB (HCLK) = SYSCLK / Prescaler
   * SysTick = HCLK or HCLK/8
   * APB1 (P1CLK) = HCLK / Prescaler
@@ -30,6 +30,15 @@
   * |                                         |  -- *PLLN ---           |                                                                               |
   * |                                         ---------------------------                                                                               |
   * -----------------------------------------------------------------------------------------------------------------------------------------------------
+  * 
+  * Specifications:
+  * Max Values:
+  * SYSCLOCK <= 168
+  * HCLK <= 168
+  * P2CLK <= 84
+  * 	if prescaler > 1 TimerCLK * 2
+  * P1CLK <= 42
+  * 	if prescaler > 1 TimerCLK * 2
   */
 
 namespace bare_metal
@@ -92,7 +101,7 @@ namespace bare_metal
 	/* Oscillator Type: 
 	 * HSI = Internal MCU RC Oscillator 
 	 * HSE = External MCU Crystall Oscillator   */
-	enum class Sys_Oscillator_Type : std::uint32_t
+	enum class Sys_Oscillator_Type : std::uint8_t
 	{
 		OSC_TYPE_HSI         = (0x1),
 		OSC_TYPE_HSE         = (0x2)
@@ -102,9 +111,9 @@ namespace bare_metal
 	struct Frequency_Clock_Type
 	{
 		std::uint32_t frequency_sysclk; /* Refered as SYSCLK */
-		std::uint32_t frequency_ahb;    /* Refered as HCLK */
-		std::uint32_t frequency_apb1;   /* Refered as P1CLK */
-		std::uint32_t frequency_apb2;   /* Refered as P2CLK */
+		std::uint32_t frequency_hclk;    /* Refered as HCLK */
+		std::uint32_t frequency_p1clk;   /* Refered as P1CLK */
+		std::uint32_t frequency_p2clk;   /* Refered as P2CLK */
 	};
 
 	/* PLL Prescalers 
@@ -127,16 +136,35 @@ namespace bare_metal
 			Sys_Clock();
 			Sys_Clock(Sys_Oscillator_Type osc_type);
 
-			std::uint32_t get_sysclk_frequency() const;
-			Frequency_Clock_Type get_frequency() const;
+			/* Gets type of Oscillator Type HSI, HSE */
 			Sys_Oscillator_Type get_oscillator_type() const;
 
-			void configuration_hsi();
-			void configuration_hse();
+			/* To get the frequency of all or specific clock */
+			Frequency_Clock_Type get_frequency() const;
+			std::uint32_t get_sysclk_frequency() const;
+			std::uint32_t get_hclk_frequency() const;
+			std::uint32_t get_p1clk_frequency() const;
+			std::uint32_t get_p2clk_frequency() const;
+
+			/* Use to select HSE for system clock */
+			void sysclk_select_hse();
+
+			/* Use to configure clock frequency for specific clock peripherals */
+			void configure_prescaler_ahb(const Prescaler_AHB prescaler_ahb);
+			void configure_prescaler_apb1(const Prescaler_APB1 prescaler_apb1);
+			void configure_prescaler_apb2(const Prescaler_APB2 prescaler_apb2);
+
+			/* Alternate way to configure prescalers using operator overload */
+			Sys_Clock& operator /=(const Prescaler_AHB prescaler_ahb);
+			Sys_Clock& operator /=(const Prescaler_APB1 prescaler_apb1);
+			Sys_Clock& operator /=(const Prescaler_APB2 prescaler_apb2);
 
 		private:
 			void frequency_default_hsi();
 			void frequency_default_hse();
+			void frequency_update_hclk(const Prescaler_AHB prescaler_ahb);
+			void frequency_update_p1clk(const Prescaler_APB1 prescaler_apb1);
+			void frequency_update_p2clk(const Prescaler_APB2 prescaler_apb2);
 
 		protected:
 			Sys_Oscillator_Type oscillator_type;
@@ -151,8 +179,6 @@ namespace bare_metal
 		/* f(VCO clock) = f(PLL clock input) × (PLLN / PLLM)
          * f(PLL general clock output) = f(VCO clock) / PLLP */
 			Sys_Clock_PLL();
-			
-
 
 		private:
 			void prescaler_default_pll();
