@@ -257,29 +257,40 @@ void Sys_Clock_PLL::configure_prescaler_plln(const Prescaler_PLLN prescaler_plln
 
 void Sys_Clock_PLL::configure_prescaler_pllm(const Prescaler_PLLM prescaler_pllm)
 {
-
+	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);	
+	*rcc_pllcfgr &= ~(18U << 0U);
+	*rcc_pllcfgr |= (static_cast<uint32_t>(prescaler_pllm) << 0U);
 }
 
 
 void Sys_Clock_PLL::configure_prescaler_pllp(const Prescaler_PLLP prescaler_pllp)
 {
-
+	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);
+	*rcc_pllcfgr &= ~(15U << 16U);
+	*rcc_pllcfgr |= (static_cast<uint32_t>(prescaler_pllp) << 16U);
 }
 
 Sys_Clock_PLL& Sys_Clock_PLL::operator *=(const Prescaler_PLLN prescaler_plln)
 {
-
+	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);
+	*rcc_pllcfgr &= ~(511U << 6U);
+	*rcc_pllcfgr |= (static_cast<uint32_t>(prescaler_plln) << 6U);
 	return *this;
 }
 
 Sys_Clock_PLL& Sys_Clock_PLL::operator /=(const Prescaler_PLLM prescaler_pllm)
 {
+	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);	
+	*rcc_pllcfgr &= ~(18U << 0U);
+	*rcc_pllcfgr |= (static_cast<uint32_t>(prescaler_pllm) << 0U);
 	return *this;
 }
 
 Sys_Clock_PLL& Sys_Clock_PLL::operator /=(const Prescaler_PLLP prescaler_pllp)
 {
-
+	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);
+	*rcc_pllcfgr &= ~(15U << 16U);
+	*rcc_pllcfgr |= (static_cast<uint32_t>(prescaler_pllp) << 16U);
 	return *this;
 }
 
