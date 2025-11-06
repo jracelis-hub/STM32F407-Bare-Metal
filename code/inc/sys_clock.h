@@ -64,6 +64,9 @@ namespace bare_metal
 	constexpr std::uint32_t RCC_APB1ENR            = (RCC_BASE_ADDRESS + 0x40);     /* (RCC_APB1ENR) Clock Enable APB1 */
 	constexpr std::uint32_t RCC_APB2ENR            = (RCC_BASE_ADDRESS + 0x44);     /* (RCC_APB2ENR) Clock Enable APB2 */
 
+	/* Configuration for Flash Access Control Register */
+	constexpr std::uint32_t FLASH_ACR              = (0x40023C00);                  /* Flash Access Control Register */
+
 	/* AHB Prescaler SysCLK / Prescaler = HCLK */
 	enum class Prescaler_AHB : std::uint32_t
 	{
@@ -103,8 +106,9 @@ namespace bare_metal
 	 * HSE = External MCU Crystall Oscillator   */
 	enum class Sys_Oscillator_Type : std::uint8_t
 	{
-		OSC_TYPE_HSI         = (0x1),
-		OSC_TYPE_HSE         = (0x2)
+		OSC_TYPE_HSI         = (0x0),
+		OSC_TYPE_HSE         = (0x1),
+		OSC_TYPE_PLL         = (0x2)
 	};
 
 	/* Frequency in MHz */
@@ -116,7 +120,7 @@ namespace bare_metal
 		std::uint32_t frequency_p2clk;   /* Refered as P2CLK */
 	};
 
-	enum class Prescaler_PLLM : uint32_t 
+	enum class Prescaler_PLLM : std::uint32_t 
 	{
 		PRESCALER_PLLM_DIV2              = (0x2),
 		PRESCALER_PLLM_DIV3              = (0x3),
@@ -182,7 +186,7 @@ namespace bare_metal
 		PRESCALER_PLLM_DIV63             = (0x3F)
 	};
 
-	enum class Prescaler_PLLN : uint32_t
+	enum class Prescaler_PLLN : std::uint32_t
 	{
 		PRESCALER_PLLN_MUL50             = (0x32),
 		PRESCALER_PLLN_MUL51             = (0x33),
@@ -336,9 +340,196 @@ namespace bare_metal
 		PRESCALER_PLLN_MUL199            = (0xC7),
 		PRESCALER_PLLN_MUL200            = (0xC8),
 		PRESCALER_PLLN_MUL201            = (0xC9),
-
-
-
+		PRESCALER_PLLN_MUL202            = (0xCA),
+		PRESCALER_PLLN_MUL203            = (0xCB),
+		PRESCALER_PLLN_MUL204            = (0xCC),
+		PRESCALER_PLLN_MUL205            = (0xCD),
+		PRESCALER_PLLN_MUL206            = (0xCE),
+		PRESCALER_PLLN_MUL207            = (0xCF),
+		PRESCALER_PLLN_MUL208            = (0xD0),
+		PRESCALER_PLLN_MUL209            = (0xD1),
+		PRESCALER_PLLN_MUL210            = (0xD2),
+		PRESCALER_PLLN_MUL211            = (0xD3),
+		PRESCALER_PLLN_MUL212            = (0xD4),
+		PRESCALER_PLLN_MUL213            = (0xD5),
+		PRESCALER_PLLN_MUL214            = (0xD6),
+		PRESCALER_PLLN_MUL215            = (0xD7),
+		PRESCALER_PLLN_MUL216            = (0xD8),
+		PRESCALER_PLLN_MUL217            = (0xD9),
+		PRESCALER_PLLN_MUL218            = (0xDA),
+		PRESCALER_PLLN_MUL219            = (0xDB),
+		PRESCALER_PLLN_MUL220            = (0xDC),
+		PRESCALER_PLLN_MUL221            = (0xDD),
+		PRESCALER_PLLN_MUL222            = (0xDE),
+		PRESCALER_PLLN_MUL223            = (0xDF),
+		PRESCALER_PLLN_MUL224            = (0xE0),
+		PRESCALER_PLLN_MUL225            = (0xE1),
+		PRESCALER_PLLN_MUL226            = (0xE2),
+		PRESCALER_PLLN_MUL227            = (0xE3),
+		PRESCALER_PLLN_MUL228            = (0xE4),
+		PRESCALER_PLLN_MUL229            = (0xE5),
+		PRESCALER_PLLN_MUL230            = (0xE6),
+		PRESCALER_PLLN_MUL231            = (0xE7),
+		PRESCALER_PLLN_MUL232            = (0xE8),
+		PRESCALER_PLLN_MUL233            = (0xE9),
+		PRESCALER_PLLN_MUL234            = (0xEA),
+		PRESCALER_PLLN_MUL235            = (0xEB),
+		PRESCALER_PLLN_MUL236            = (0xEC),
+		PRESCALER_PLLN_MUL237            = (0xED),
+		PRESCALER_PLLN_MUL238            = (0xEE),
+		PRESCALER_PLLN_MUL239            = (0xEF),
+		PRESCALER_PLLN_MUL240            = (0xF0),
+		PRESCALER_PLLN_MUL241            = (0xF1),
+		PRESCALER_PLLN_MUL242            = (0xF2),
+		PRESCALER_PLLN_MUL243            = (0xF3),
+		PRESCALER_PLLN_MUL244            = (0xF4),
+		PRESCALER_PLLN_MUL245            = (0xF5),
+		PRESCALER_PLLN_MUL246            = (0xF6),
+		PRESCALER_PLLN_MUL247            = (0xF7),
+		PRESCALER_PLLN_MUL248            = (0xF8),
+		PRESCALER_PLLN_MUL249            = (0xF9),
+		PRESCALER_PLLN_MUL250            = (0xFA),
+		PRESCALER_PLLN_MUL251            = (0xFB),
+		PRESCALER_PLLN_MUL252            = (0xFC),
+		PRESCALER_PLLN_MUL253            = (0xFD),
+		PRESCALER_PLLN_MUL254            = (0xFE),
+		PRESCALER_PLLN_MUL255            = (0xFF),
+		PRESCALER_PLLN_MUL256            = (0x100),
+		PRESCALER_PLLN_MUL257            = (0x101),
+		PRESCALER_PLLN_MUL258            = (0x102),
+		PRESCALER_PLLN_MUL259            = (0x103),
+		PRESCALER_PLLN_MUL260            = (0x104),
+		PRESCALER_PLLN_MUL261            = (0x105),
+		PRESCALER_PLLN_MUL262            = (0x106),
+		PRESCALER_PLLN_MUL263            = (0x107),
+		PRESCALER_PLLN_MUL264            = (0x108),
+		PRESCALER_PLLN_MUL265            = (0x109),
+		PRESCALER_PLLN_MUL266            = (0x10A),
+		PRESCALER_PLLN_MUL267            = (0x10B),
+		PRESCALER_PLLN_MUL268            = (0x10C),
+		PRESCALER_PLLN_MUL269            = (0x10D),
+		PRESCALER_PLLN_MUL270            = (0x10E),
+		PRESCALER_PLLN_MUL271            = (0x10F),
+		PRESCALER_PLLN_MUL272            = (0x110),
+		PRESCALER_PLLN_MUL273            = (0x111),
+		PRESCALER_PLLN_MUL274            = (0x112),
+		PRESCALER_PLLN_MUL275            = (0x113),
+		PRESCALER_PLLN_MUL276            = (0x114),
+		PRESCALER_PLLN_MUL277            = (0x115),
+		PRESCALER_PLLN_MUL278            = (0x116),
+		PRESCALER_PLLN_MUL279            = (0x117),
+		PRESCALER_PLLN_MUL280            = (0x118),
+		PRESCALER_PLLN_MUL281            = (0x119),
+		PRESCALER_PLLN_MUL282            = (0x11A),
+		PRESCALER_PLLN_MUL283            = (0x11B),
+		PRESCALER_PLLN_MUL284            = (0x11C),
+		PRESCALER_PLLN_MUL285            = (0x11D),
+		PRESCALER_PLLN_MUL286            = (0x11E),
+		PRESCALER_PLLN_MUL287            = (0x11F),
+		PRESCALER_PLLN_MUL288            = (0x120),
+		PRESCALER_PLLN_MUL289            = (0x121),
+		PRESCALER_PLLN_MUL290            = (0x122),
+		PRESCALER_PLLN_MUL291            = (0x123),
+		PRESCALER_PLLN_MUL292            = (0x124),
+		PRESCALER_PLLN_MUL293            = (0x125),
+		PRESCALER_PLLN_MUL294            = (0x126),
+		PRESCALER_PLLN_MUL295            = (0x127),
+		PRESCALER_PLLN_MUL296            = (0x128),
+		PRESCALER_PLLN_MUL297            = (0x129),
+		PRESCALER_PLLN_MUL298            = (0x12A),
+		PRESCALER_PLLN_MUL299            = (0x12B),
+		PRESCALER_PLLN_MUL300            = (0x12C),
+		PRESCALER_PLLN_MUL301            = (0x12D),
+		PRESCALER_PLLN_MUL302            = (0x12E),
+		PRESCALER_PLLN_MUL303            = (0x12F),
+		PRESCALER_PLLN_MUL304            = (0x130),
+		PRESCALER_PLLN_MUL305            = (0x131),
+		PRESCALER_PLLN_MUL306            = (0x132),
+		PRESCALER_PLLN_MUL307            = (0x133),
+		PRESCALER_PLLN_MUL308            = (0x134),
+		PRESCALER_PLLN_MUL309            = (0x135),
+		PRESCALER_PLLN_MUL310            = (0x136),
+		PRESCALER_PLLN_MUL311            = (0x137),
+		PRESCALER_PLLN_MUL312            = (0x138),
+		PRESCALER_PLLN_MUL313            = (0x139),
+		PRESCALER_PLLN_MUL314            = (0x13A),
+		PRESCALER_PLLN_MUL315            = (0x13B),
+		PRESCALER_PLLN_MUL316            = (0x13C),
+		PRESCALER_PLLN_MUL317            = (0x13D),
+		PRESCALER_PLLN_MUL318            = (0x13E),
+		PRESCALER_PLLN_MUL319            = (0x13F),
+		PRESCALER_PLLN_MUL320            = (0x140),
+		PRESCALER_PLLN_MUL321            = (0x141),
+		PRESCALER_PLLN_MUL322            = (0x142),
+		PRESCALER_PLLN_MUL323            = (0x143),
+		PRESCALER_PLLN_MUL324            = (0x144),
+		PRESCALER_PLLN_MUL325            = (0x145),
+		PRESCALER_PLLN_MUL326            = (0x146),
+		PRESCALER_PLLN_MUL327            = (0x147),
+		PRESCALER_PLLN_MUL328            = (0x148),
+		PRESCALER_PLLN_MUL329            = (0x149),
+		PRESCALER_PLLN_MUL330            = (0x14A),
+		PRESCALER_PLLN_MUL331            = (0x14B),
+		PRESCALER_PLLN_MUL332            = (0x14C),
+		PRESCALER_PLLN_MUL333            = (0x14D),
+		PRESCALER_PLLN_MUL334            = (0x14E),
+		PRESCALER_PLLN_MUL335            = (0x14F),
+		PRESCALER_PLLN_MUL336            = (0x150),
+		PRESCALER_PLLN_MUL337            = (0x151),
+		PRESCALER_PLLN_MUL338            = (0x152),
+		PRESCALER_PLLN_MUL339            = (0x153),
+		PRESCALER_PLLN_MUL340            = (0x154),
+		PRESCALER_PLLN_MUL341            = (0x155),
+		PRESCALER_PLLN_MUL342            = (0x156),
+		PRESCALER_PLLN_MUL343            = (0x157),
+		PRESCALER_PLLN_MUL344            = (0x158),
+		PRESCALER_PLLN_MUL345            = (0x159),
+		PRESCALER_PLLN_MUL346            = (0x15A),
+		PRESCALER_PLLN_MUL347            = (0x15B),
+		PRESCALER_PLLN_MUL348            = (0x15C),
+		PRESCALER_PLLN_MUL349            = (0x15D),
+		PRESCALER_PLLN_MUL350            = (0x15E),
+		PRESCALER_PLLN_MUL351            = (0x15F),
+		PRESCALER_PLLN_MUL352            = (0x160),
+		PRESCALER_PLLN_MUL353            = (0x161),
+		PRESCALER_PLLN_MUL354            = (0x162),
+		PRESCALER_PLLN_MUL355            = (0x163),
+		PRESCALER_PLLN_MUL356            = (0x164),
+		PRESCALER_PLLN_MUL357            = (0x165),
+		PRESCALER_PLLN_MUL358            = (0x166),
+		PRESCALER_PLLN_MUL359            = (0x167),
+		PRESCALER_PLLN_MUL360            = (0x168),
+		PRESCALER_PLLN_MUL361            = (0x169),
+		PRESCALER_PLLN_MUL362            = (0x16A),
+		PRESCALER_PLLN_MUL363            = (0x16B),
+		PRESCALER_PLLN_MUL364            = (0x16C),
+		PRESCALER_PLLN_MUL365            = (0x16D),
+		PRESCALER_PLLN_MUL366            = (0x16E),
+		PRESCALER_PLLN_MUL367            = (0x16F),
+		PRESCALER_PLLN_MUL368            = (0x170),
+		PRESCALER_PLLN_MUL369            = (0x171),
+		PRESCALER_PLLN_MUL370            = (0x172),
+		PRESCALER_PLLN_MUL371            = (0x173),
+		PRESCALER_PLLN_MUL372            = (0x174),
+		PRESCALER_PLLN_MUL373            = (0x175),
+		PRESCALER_PLLN_MUL374            = (0x176),
+		PRESCALER_PLLN_MUL375            = (0x177),
+		PRESCALER_PLLN_MUL376            = (0x178),
+		PRESCALER_PLLN_MUL377            = (0x179),
+		PRESCALER_PLLN_MUL378            = (0x17A),
+		PRESCALER_PLLN_MUL379            = (0x17B),
+		PRESCALER_PLLN_MUL380            = (0x17C),
+		PRESCALER_PLLN_MUL381            = (0x17D),
+		PRESCALER_PLLN_MUL382            = (0x17E),
+		PRESCALER_PLLN_MUL383            = (0x17F),
+		PRESCALER_PLLN_MUL384            = (0x180),
+		PRESCALER_PLLN_MUL385            = (0x181),
+		PRESCALER_PLLN_MUL386            = (0x182),
+		PRESCALER_PLLN_MUL387            = (0x183),
+		PRESCALER_PLLN_MUL388            = (0x184),
+		PRESCALER_PLLN_MUL389            = (0x185),
+		PRESCALER_PLLN_MUL390            = (0x186),
+		PRESCALER_PLLN_MUL391            = (0x187),
 		PRESCALER_PLLN_MUL392            = (0x188),
 		PRESCALER_PLLN_MUL393            = (0x189),
 		PRESCALER_PLLN_MUL394            = (0x18A),
@@ -382,7 +573,7 @@ namespace bare_metal
 		PRESCALER_PLLN_MUL432            = (0x1B0)
 	};
 
-	enum class Prescaler_PLLP : uint32_t
+	enum class Prescaler_PLLP : std::uint32_t
 	{
 		PRESCALER_PLLP_DIV2              = (0x0),
 		PRESCALER_PLLP_DIV4              = (0x1),
@@ -390,16 +581,31 @@ namespace bare_metal
 		PRESCALER_PLLP_DIV8              = (0x3)
 	};
 
+	enum class Flash_Latency : std::uint32_t
+	{
+		FLASH_LATENCY_WS0                = (0x0),
+		FLASH_LATENCY_WS1                = (0x1),
+		FLASH_LATENCY_WS2                = (0x2),
+		FLASH_LATENCY_WS3                = (0x3),
+		FLASH_LATENCY_WS4                = (0x4),
+		FLASH_LATENCY_WS5                = (0x5),
+		FLASH_LATENCY_WS6                = (0x6),
+		FLASH_LATENCY_WS7                = (0x7)
+	};
 
-	/* Sys_Clock SYSCLK 
-	 * Input = HSI or HSE */
+	enum class Frequency_Sys_Clock_Status : std::uint8_t
+	{
+		STATUS_SYS_CLOCK_OK              = (0x0),
+		STATUS_SYS_CLOCK_NOK             = (0x1)
+	};
+
 	class Sys_Clock
 	{
 		public:
 			Sys_Clock();
 			Sys_Clock(Sys_Oscillator_Type osc_type);
 
-			/* Gets type of Oscillator Type HSI, HSE */
+			/* Gets type of Oscillator Type HSI, HSE, PLL */
 			Sys_Oscillator_Type get_oscillator_type() const;
 
 			/* To get the frequency of all or specific clock */
@@ -409,47 +615,58 @@ namespace bare_metal
 			std::uint32_t get_p1clk_frequency() const;
 			std::uint32_t get_p2clk_frequency() const;
 
+			/* Use to enable pll clock */
+			void sysclk_enable_pll();
+
+			/* Use to disable hsi system clk */
+			void sysclk_disable_hsi();
+
 			/* Use to select HSE for system clock */
 			void sysclk_select_hse();
+			void sysclk_select_pll();
+
+			/* Use to choose which source clock input to use */
+			void configure_source_pll();
+
+			/* Use to configure the flash latency according to reference manual specifications */
+			Frequency_Sys_Clock_Status configure_flash_latency();
 
 			/* Use to configure clock frequency for specific clock peripherals */
 			void configure_prescaler_ahb(const Prescaler_AHB prescaler_ahb);
 			void configure_prescaler_apb1(const Prescaler_APB1 prescaler_apb1);
 			void configure_prescaler_apb2(const Prescaler_APB2 prescaler_apb2);
 
+			/* Use to configure prescalers for PLL Engine for the desired PLLCLK output */
+			void configure_prescaler_pllm(const Prescaler_PLLM prescaler_pllm);
+			void configure_prescaler_plln(const Prescaler_PLLN prescaler_plln);
+			void configure_prescaler_pllp(const Prescaler_PLLP prescaler_pllp);
+
 			/* Alternate way to configure prescalers using operator overload */
 			Sys_Clock& operator /=(const Prescaler_AHB prescaler_ahb);
 			Sys_Clock& operator /=(const Prescaler_APB1 prescaler_apb1);
 			Sys_Clock& operator /=(const Prescaler_APB2 prescaler_apb2);
 
+			/* Alternate way to configure prescaleres usiong opearator overload */
+			Sys_Clock& operator /= (const Prescaler_PLLM prescaler_pllp);
+			Sys_Clock& operator /= (const Prescaler_PLLP prescaler_pllp);
+			Sys_Clock& operator *= (const Prescaler_PLLN prescaler_plln);
+
 		private:
 			void frequency_default_hsi();
 			void frequency_default_hse();
+			void frequency_default_pll();
+
 			void frequency_update_hclk(const Prescaler_AHB prescaler_ahb);
 			void frequency_update_p1clk(const Prescaler_APB1 prescaler_apb1);
 			void frequency_update_p2clk(const Prescaler_APB2 prescaler_apb2);
 
-		protected:
+
+			void frequency_update_pllclk(const Prescaler_PLLM prescaler_pllm);
+			void frequency_update_pllclk(const Prescaler_PLLP prescaler_pllp);
+			void frequency_update_pllclk(const Prescaler_PLLN prescaler_plln);
+
 			Sys_Oscillator_Type oscillator_type;
 			Frequency_Clock_Type frequency_clock;
-	};
-
-	/* PLL Engine that inherits input from Sys_Clock 
-	 * PLL Engine can underclock or overclock SYSCLK with PLL scaler manipulation */
-	class Sys_Clock_PLL : public Sys_Clock
-	{
-		public:
-			Sys_Clock_PLL(const Sys_Clock& clock_input);
-
-			/* */
-			void configure_prescaler_pllm(const Prescaler_PLLM prescaler_pllm);
-			void configure_prescaler_plln(const Prescaler_PLLN prescaler_plln);
-			void configure_prescaler_pllp(const Prescaler_PLLP prescaler_pllp);
-
-			/* */
-			Sys_Clock_PLL& operator /= (const Prescaler_PLLM prescaler_pllp);
-			Sys_Clock_PLL& operator /= (const Prescaler_PLLP prescaler_pllp);
-			Sys_Clock_PLL& operator *= (const Prescaler_PLLN prescaler_plln);
 	};
 }
 

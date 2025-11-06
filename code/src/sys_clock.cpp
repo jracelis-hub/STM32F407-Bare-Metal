@@ -43,6 +43,9 @@
 namespace bare_metal
 {
 
+/* Beginning Sys_Clock Source Code
+ */
+
 void Sys_Clock::frequency_default_hse()
 {
 	this->frequency_clock.frequency_sysclk = FREQUENCY_HSE;
@@ -139,6 +142,13 @@ void Sys_Clock::frequency_update_p2clk(Prescaler_APB2 prescaler_apb2)
 	}
 }
 
+void Sys_Clock::frequency_default_pll()
+{
+	this->frequency_clock.frequency_sysclk = this->frequency_clock.frequency_hclk;
+	this->frequency_clock.frequency_sysclk = this->frequency_clock.frequency_p1clk;
+	this->frequency_clock.frequency_sysclk = this->frequency_clock.frequency_p2clk;
+}
+
 Sys_Clock::Sys_Clock() : oscillator_type(Sys_Oscillator_Type::OSC_TYPE_HSI)
 {
 	frequency_default_hsi();
@@ -161,6 +171,13 @@ Sys_Clock::Sys_Clock(Sys_Oscillator_Type osc_type) : oscillator_type(osc_type)
 	}
 }
 
+void Sys_Clock::sysclk_disable_hsi()
+{
+	volatile std::uint32_t *rcc_cr = reinterpret_cast<volatile std::uint32_t *>(RCC_CR);
+	/* Clear HSION field */
+	*rcc_cr &= ~(1U << 0);
+}
+
 void Sys_Clock::sysclk_select_hse()
 {
 	/* Select HSE as System Clock Source */
@@ -168,6 +185,20 @@ void Sys_Clock::sysclk_select_hse()
 	*rcc_cfgr |= (1U << 0U);
 	/* Reads SW bit until it shows the System Clock Status is enabled 01 HSE */
 	while((*rcc_cfgr & (3U << 2U)) != (1U << 2U));
+	/* Disable HSI now since HSE is enabled */
+	sysclk_disable_hsi();
+}
+
+void Sys_Clock::sysclk_select_pll()
+{
+	volatile std::uint32_t *rcc_cfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_CFGR);
+	/* Clear the Selected Clock */
+	*rcc_cfgr &= ~(3U << 0U);
+	/* Set the Clock to PLL as System Clock */
+	*rcc_cfgr |= (2U << 0U);
+	/* Loops until System Clock Status is enabled PLL 10 */
+	while((*rcc_cfgr & (3U << 2U)) != (2U << 2U));
+	frequency_default_pll();
 }
 
 void Sys_Clock::configure_prescaler_ahb(const Prescaler_AHB prescaler_ahb)
@@ -242,35 +273,60 @@ Sys_Oscillator_Type Sys_Clock::get_oscillator_type() const
 	return this->oscillator_type;
 }
 
-Sys_Clock_PLL::Sys_Clock_PLL(const Sys_Clock& clock_input) 
+void Sys_Clock::frequency_update_pllclk(const Prescaler_PLLM prescaler_pllm)
 {
-	oscillator_type = clock_input.get_oscillator_type();
-	frequency_clock = clock_input.get_frequency();
+	this->frequency_clock.frequency_sysclk /= static_cast<uint32_t>(prescaler_pllm);
 }
 
-void Sys_Clock_PLL::configure_prescaler_plln(const Prescaler_PLLN prescaler_plln)
+void Sys_Clock::frequency_update_pllclk(const Prescaler_PLLP prescaler_pllp)
 {
-	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);
-	*rcc_pllcfgr &= ~(511U << 6U);
-	*rcc_pllcfgr |= (static_cast<uint32_t>(prescaler_plln) << 6U);
+	switch(prescaler_pllp)
+	{
+		case Prescaler_PLLP::PRESCALER_PLLP_DIV2:
+			this->frequency_clock.frequency_sysclk /= 2U;
+			break;
+		case Prescaler_PLLP::PRESCALER_PLLP_DIV4:
+			this->frequency_clock.frequency_sysclk /= 4U;
+			break;
+		case Prescaler_PLLP::PRESCALER_PLLP_DIV6:
+			this->frequency_clock.frequency_sysclk /= 6U;
+			break;
+		case Prescaler_PLLP::PRESCALER_PLLP_DIV8:
+			this->frequency_clock.frequency_sysclk /= 8U;
+			break;
+	}
 }
 
-void Sys_Clock_PLL::configure_prescaler_pllm(const Prescaler_PLLM prescaler_pllm)
+void Sys_Clock::frequency_update_pllclk(const Prescaler_PLLN prescaler_plln)
+{
+	this->frequency_clock.frequency_sysclk *= static_cast<uint32_t>(prescaler_plln);
+}
+
+void Sys_Clock::configure_prescaler_pllm(const Prescaler_PLLM prescaler_pllm)
 {
 	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);	
 	*rcc_pllcfgr &= ~(18U << 0U);
 	*rcc_pllcfgr |= (static_cast<uint32_t>(prescaler_pllm) << 0U);
+	frequency_update_pllclk(prescaler_pllm);
 }
 
+void Sys_Clock::configure_prescaler_plln(const Prescaler_PLLN prescaler_plln)
+{
+	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);
+	*rcc_pllcfgr &= ~(511U << 6U);
+	*rcc_pllcfgr |= (static_cast<uint32_t>(prescaler_plln) << 6U);
+	frequency_update_pllclk(prescaler_plln);
+}
 
-void Sys_Clock_PLL::configure_prescaler_pllp(const Prescaler_PLLP prescaler_pllp)
+void Sys_Clock::configure_prescaler_pllp(const Prescaler_PLLP prescaler_pllp)
 {
 	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);
 	*rcc_pllcfgr &= ~(15U << 16U);
 	*rcc_pllcfgr |= (static_cast<uint32_t>(prescaler_pllp) << 16U);
+	frequency_update_pllclk(prescaler_pllp);
 }
 
-Sys_Clock_PLL& Sys_Clock_PLL::operator *=(const Prescaler_PLLN prescaler_plln)
+Sys_Clock& Sys_Clock::operator *=(const Prescaler_PLLN prescaler_plln)
 {
 	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);
 	*rcc_pllcfgr &= ~(511U << 6U);
@@ -278,7 +334,7 @@ Sys_Clock_PLL& Sys_Clock_PLL::operator *=(const Prescaler_PLLN prescaler_plln)
 	return *this;
 }
 
-Sys_Clock_PLL& Sys_Clock_PLL::operator /=(const Prescaler_PLLM prescaler_pllm)
+Sys_Clock& Sys_Clock::operator /=(const Prescaler_PLLM prescaler_pllm)
 {
 	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);	
 	*rcc_pllcfgr &= ~(18U << 0U);
@@ -286,12 +342,65 @@ Sys_Clock_PLL& Sys_Clock_PLL::operator /=(const Prescaler_PLLM prescaler_pllm)
 	return *this;
 }
 
-Sys_Clock_PLL& Sys_Clock_PLL::operator /=(const Prescaler_PLLP prescaler_pllp)
+Sys_Clock& Sys_Clock::operator /=(const Prescaler_PLLP prescaler_pllp)
 {
 	volatile uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);
 	*rcc_pllcfgr &= ~(15U << 16U);
 	*rcc_pllcfgr |= (static_cast<uint32_t>(prescaler_pllp) << 16U);
 	return *this;
+}
+
+void Sys_Clock::sysclk_enable_pll()
+{
+	volatile uint32_t *rcc_cr = reinterpret_cast<volatile std::uint32_t *>(RCC_CR);
+	*rcc_cr |= (1U << 24U);
+	/* Waits until it is at a PLLRDY state */
+	while(!(*rcc_cr & (1U << 25U)));
+}
+
+void Sys_Clock::configure_source_pll()
+{
+	if (this->oscillator_type == Sys_Oscillator_Type::OSC_TYPE_HSE)
+	{
+		volatile std::uint32_t *rcc_pllcfgr = reinterpret_cast<volatile std::uint32_t *>(RCC_PLLCFGR);
+		*rcc_pllcfgr |= (1U << 22U);
+	}
+}
+
+Frequency_Sys_Clock_Status Sys_Clock::configure_flash_latency()
+{
+	if (this->frequency_clock.frequency_sysclk < 0U || this->frequency_clock.frequency_sysclk > 168000000U)
+	{
+		return Frequency_Sys_Clock_Status::STATUS_SYS_CLOCK_NOK;
+	}
+
+	volatile std::uint32_t *flash_acr = reinterpret_cast<volatile std::uint32_t *>(FLASH_ACR);
+
+	if (this->frequency_clock.frequency_sysclk >= 0U && this->frequency_clock.frequency_sysclk <= 30000000U)
+	{
+		*flash_acr |= (static_cast<std::uint32_t>(Flash_Latency::FLASH_LATENCY_WS0) << 0U);
+	}
+	else if (this->frequency_clock.frequency_sysclk > 30000000U && this->frequency_clock.frequency_sysclk <= 60000000U)
+	{
+		*flash_acr |= (static_cast<std::uint32_t>(Flash_Latency::FLASH_LATENCY_WS1) << 0U);
+	}
+	else if (this->frequency_clock.frequency_sysclk > 60000000U && this->frequency_clock.frequency_sysclk <= 90000000U)
+	{
+		*flash_acr |= (static_cast<std::uint32_t>(Flash_Latency::FLASH_LATENCY_WS2) << 0U);
+	}
+	else if (this->frequency_clock.frequency_sysclk > 90000000U && this->frequency_clock.frequency_sysclk <= 120000000U)
+	{
+		*flash_acr |= (static_cast<std::uint32_t>(Flash_Latency::FLASH_LATENCY_WS3) << 0U);
+	}
+	else if (this->frequency_clock.frequency_sysclk > 120000000U && this->frequency_clock.frequency_sysclk <= 150000000U)
+	{
+		*flash_acr |= (static_cast<std::uint32_t>(Flash_Latency::FLASH_LATENCY_WS4) << 0U);
+	}
+	else if (this->frequency_clock.frequency_sysclk > 150000000U && this->frequency_clock.frequency_sysclk <= 168000000U)
+	{
+		*flash_acr |= (static_cast<std::uint32_t>(Flash_Latency::FLASH_LATENCY_WS5) << 0U);
+	}
+	return Frequency_Sys_Clock_Status::STATUS_SYS_CLOCK_OK;
 }
 
 }
