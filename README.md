@@ -69,7 +69,7 @@ The driver is broken into a class `Sys_Clock`, sys_clock is the input to all har
 It drives the peripheral buses and the system as a whole.
 
 `Sys_Clock` can be created two ways:
-```
+```c++
 Sys_Clock hsi = Sys_Clock();
 
 /* Or */
@@ -85,7 +85,7 @@ Sys_Clock hse = Sys_Clock(Sys_Oscillator_Type osc_type);
 > By default upon microcontroller power on reset, HSI is already the default clock.
 
 If HSE is needed for precise accuracy do the following:
-```
+```c++
 Sys_Clock hse = Sys_Clock(Sys_Oscillator_Type::OSC_TYPE_HSE);
 hse.sysclk_select_hse();
 ```
@@ -95,7 +95,7 @@ hse.sysclk_select_hse();
 To use PLL for overclocking or underclocking it needs an input clock soure, either HSI or HSE. 
 
 After the initial object is created HSI or HSE use:
-```
+```c++
 hse.configure_source_pll();
 hsi.configure_source_pll();
 /* Prescaleres to configure PLLCLK to desired clock frequency */
