@@ -1,16 +1,18 @@
 CC=arm-none-eabi-g++
+VERSION=-std=gnu++14
+CPU=-mcpu=cortex-m4
 INCLUDE=-I../inc
 WARNING=-Wall -Werror
-FLAGS=$(INCLUDE) $(WARNING)
+FLAGS=$(INCLUDE) $(WARNING) $(VERSION) $(CPU)
 
-SRC=sys_clock.cpp
-OBJECT=sys_clock.o
+SRC=sys_clock.cpp nvic.cpp
+OBJECT=sys_clock.o nvic.o
 
 .PHONE: all clean
 
 all: $(OBJECT)
 
-$(OBJECT):$(SRC)
+%.o:%.cpp
 	$(CC) -c $< -o $@ $(FLAGS)
 
 clean:

@@ -1,4 +1,4 @@
-#include "nvic.cpp"
+#include "nvic.h"
 
 namespace bare_metal
 {
@@ -28,14 +28,4 @@ namespace bare_metal
 		/* Enables the configured counter */
 		*syst_csr |= (1 << 0U);
 	}
-
-
-
-
-
-
-
-
-
-
 }
