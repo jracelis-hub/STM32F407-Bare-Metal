@@ -1,6 +1,6 @@
 # STM32F407 Discovery Baremetal
 
-A baremetal project written in C++ for STM32F407 Discovery board, tackling system clock configurations. The design intent is to learn the basics of registers and bit manipulation, while removing the abstraction found in many C/C++ microcontroller libraries. The bare metal clock driver 
+A baremetal project written in C++ for STM32F407 Discovery board, tackling system clock configurations. The design intent is to learn the basics of registers and bit manipulation, while removing the abstraction found in many C/C++ microcontroller libraries.
 
 ## STM32F407 Discovery Clock Flow
 
