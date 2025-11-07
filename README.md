@@ -2,6 +2,13 @@
 
 A baremetal project written in C++ for STM32F407 Discovery board, tackling system clock configurations. The design intent is to learn the basics of registers and bit manipulation, while removing the abstraction found in many C/C++ microcontroller libraries.
 
+## Reference
+
+Required STM32F407 Discovery Documentations:
+- [STM32F407 Datasheet](https://www.google.com/search?q=stm32f407+datasheet&sca_esv=0ce76fe6310e19b4&rlz=1C1VDKB_enUS1173US1173&sxsrf=AE3TifPrL4ugLxfQm2ndttLPAmjBUYfg8A%3A1762479832212&ei=2E4NaZjVDJDQkPIP9oiUgQ8&oq=stm32f407+&gs_lp=Egxnd3Mtd2l6LXNlcnAiCnN0bTMyZjQwNyAqAggBMgoQIxiABBgnGIoFMgoQIxiABBgnGIoFMgQQIxgnMgoQABiABBhDGIoFMg0QLhiABBhDGOUEGIoFMgUQABiABDIKEAAYgAQYQxiKBTIKEAAYgAQYQxiKBTIKEAAYgAQYQxiKBTIKEAAYgAQYQxiKBUjcOVCxE1ixE3ACeACQAQCYATagAWGqAQEyuAEByAEA-AEBmAIDoAJAwgIKEAAYsAMY1gQYR8ICEBAuGIAEGLADGEMY5QQYigWYAwCIBgGQBgmSBwEzoAf9FLIHATG4BzrCBwUwLjEuMsgHCA&sclient=gws-wiz-serp)
+- [STM32F407 Reference Manual](https://www.st.com/resource/en/reference_manual/dm00031020-stm32f405-415-stm32f407-417-stm32f427-437-and-stm32f429-439-advanced-arm-based-32-bit-mcus-stmicroelectronics.pdf)
+- [ARM Cortex M4 Reference Manual](https://documentation-service.arm.com/static/5f19da2a20b7cf4bc524d99a)
+
 ## STM32F407 Discovery Clock Flow
 
 ```
