@@ -96,25 +96,12 @@ namespace bare_metal
 
 	/* Configuration for SysClock */
 	constexpr std::uint32_t RCC_BASE_ADDRESS       = (0x40023800);                  /* RCC Base Address Register */
-	//constexpr std::uint32_t RCC_CR                 = (RCC_BASE_ADDRESS + 0x00);     /* (CR) Clock Control Register */
-	//constexpr std::uint32_t RCC_PLLCFGR            = (RCC_BASE_ADDRESS + 0x04);     /* (PLLCFGR) PLL Configuration Register */
-	//constexpr std::uint32_t RCC_CFGR               = (RCC_BASE_ADDRESS + 0x08);     /* (CFGR) Clock Configuration Register */
-	//constexpr std::uint32_t RCC_CIR                = (RCC_BASE_ADDRESS + 0x0C);     /* (CIR) Clock Interrupt Register */
-
-	/* To Enable Clock For Peripherals on AHB Bus */
-	//constexpr std::uint32_t RCC_AHB1ENR            = (RCC_BASE_ADDRESS + 0x30);     /* (RCC_AHB1ENR) Clock Enable AHB1 */
-	//constexpr std::uint32_t RCC_AHB2ENR            = (RCC_BASE_ADDRESS + 0x34);     /* (RCC_AHB2ENR) Clock Enable AHB2 */
-	//constexpr std::uint32_t RCC_AHB3ENR            = (RCC_BASE_ADDRESS + 0x38);     /* (RCC_AHB3ENR) Clock Enable AHB3 */
-
-	/* To Enable Clock For Peripherals on APB Bus */
-	//constexpr std::uint32_t RCC_APB1ENR            = (RCC_BASE_ADDRESS + 0x40);     /* (RCC_APB1ENR) Clock Enable APB1 */
-	//constexpr std::uint32_t RCC_APB2ENR            = (RCC_BASE_ADDRESS + 0x44);     /* (RCC_APB2ENR) Clock Enable APB2 */
 
 	/* Configuration for Flash Access Control Register */
 	constexpr std::uint32_t FLASH_BASE_ADDRESS     = (0x40023C00);                  /* Flash Access Control Register */
 
-	inline RCC_Register_Handle *RCC = reinterpret_cast<RCC_Register_Handle *>(RCC_BASE_ADDRESS);
-	inline Flash_Register_Handle *FLASH = reinterpret_cast<Flash_Register_Handle *>(FLASH_BASE_ADDRESS);
+	#define RCC               ((RCC_Register_Handle *)(RCC_BASE_ADDRESS))
+	#define FLASH             ((Flash_Register_Handle *)(RCC_BASE_ADDRESS))
 
 	/* AHB Prescaler SysCLK / Prescaler = HCLK */
 	enum class Prescaler_AHB : std::uint32_t

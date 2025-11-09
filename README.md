@@ -104,6 +104,7 @@ To use PLL for overclocking or underclocking it needs an input clock soure, eith
 After the initial object is created HSI or HSE use:
 ```c++
 hse.configure_source_pll();
+/* or */
 hsi.configure_source_pll();
 /* Prescaleres to configure PLLCLK to desired clock frequency */
 hsi.configure_prescaler_pllm(Prescaler_PLLM pllm);
@@ -112,12 +113,14 @@ hsi.configure_prescaler_pllp(Prescaler_PLLM pllp);
 
 if (hsi.configure_flash_latency() != Frequency_Sys_Clock_Status::STATUS_SYS_CLOCK_OK)
 { error_handler(); }
+hsi.sysclk_enable_pll();
 hsi.sysclk_select_pll();
 ```
 - `Prescaler_PLLx` - a enum class that provides a strongly type parameter that provides guards of what type of prescalers can be passed into PLL.
 - `.configure_source_pll()` - chooses which clock input is driving the pll (HSI or HSE)
 - `.configure_prescaler_pllx` - the prescalers is there to manipulate the input clock to produce the output PLLCLK
 - `.configure_flash_latency()` - depending on the frequency of the clock there has to be wait states in order to use a specific latency, it returns a `NOK` or `OK` as the microcontroller will crash if not done
+- `.sysclk_enable_pll()` - enables PLL clock on
 - `.configure_select_pll()` - selects PLL as system clock
 
 > [!CAUTION]
