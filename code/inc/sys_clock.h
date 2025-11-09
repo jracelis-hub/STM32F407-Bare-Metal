@@ -43,6 +43,52 @@
 
 namespace bare_metal
 {
+	typedef struct 
+	{
+		volatile std::uint32_t rcc_cr;                 /* 4002 3800 + 0x00 */
+		volatile std::uint32_t rcc_pllcfgr;            /* 4002 3800 + 0x04 */
+		volatile std::uint32_t rcc_cfgr;               /* 4002 3800 + 0x08 */
+		volatile std::uint32_t rcc_cir;                /* 4002 3800 + 0x0C */
+		volatile std::uint32_t rcc_ahb1rstr;           /* 4002 3800 + 0x10 */
+		volatile std::uint32_t rcc_ahb2rstr;           /* 4002 3800 + 0x14 */
+		volatile std::uint32_t rcc_ahb3rstr;           /* 4002 3800 + 0x18 */
+		volatile std::uint32_t reserve_1;              /* 4002 3800 + 0x1C */
+		volatile std::uint32_t rcc_apb1rstr;           /* 4002 3800 + 0x20 */
+		volatile std::uint32_t rcc_apb2rstr;           /* 4002 3800 + 0x24 */
+		volatile std::uint32_t rcc_reserve_2[2];       /* 4002 3800 + 0x28 - 0x2C */
+		volatile std::uint32_t rcc_ahb1enr;            /* 4002 3800 + 0x30 */
+		volatile std::uint32_t rcc_ahb2enr;            /* 4002 3800 + 0x34 */
+		volatile std::uint32_t rcc_ahb3enr;            /* 4002 3800 + 0x38 */
+		volatile std::uint32_t rcc_reserve_3;          /* 4002 3800 + 0x3C */
+		volatile std::uint32_t rcc_apb1enr;            /* 4002 3800 + 0x40 */
+		volatile std::uint32_t rcc_apb2enr;            /* 4002 3800 + 0x44 */
+		volatile std::uint32_t rcc_reserve_4[2];       /* 4002 3800 + 0x48 - 0x4C */
+		volatile std::uint32_t rcc_ahb1lpenr;          /* 4002 3800 + 0x50 */
+		volatile std::uint32_t rcc_ahb2lpenr;          /* 4002 3800 + 0x54 */
+		volatile std::uint32_t rcc_ahb3lpenr;          /* 4002 3800 + 0x58 */
+		volatile std::uint32_t rcc_reserve_5;          /* 4002 3800 + 0x5C */
+		volatile std::uint32_t rcc_apb1lpenr;          /* 4002 3800 + 0x60 */
+		volatile std::uint32_t rcc_apb2lpenr;          /* 4002 3800 + 0x64 */
+		volatile std::uint32_t rcc_reserve_6[2];       /* 4002 3800 + 0x68 - 0x6C */
+		volatile std::uint32_t rcc_bdcr;               /* 4002 3800 + 0x70 */
+		volatile std::uint32_t rcc_csr;                /* 4002 3800 + 0x74 */
+		volatile std::uint32_t rcc_reserve_7[2];       /* 4002 3800 + 0x78 - 0x7C */
+		volatile std::uint32_t rcc_sscgr;              /* 4002 3800 + 0x80 */
+		volatile std::uint32_t rcc_plli2s;             /* 4002 3800 + 0x84 */
+		volatile std::uint32_t rcc_pllsaicfgr;         /* 4002 3800 + 0x88 */
+		volatile std::uint32_t rcc_dckcfgr;            /* 4002 3800 + 0x8C */
+	} RCC_Register_Handle;
+
+	typedef struct
+	{
+		volatile std::uint32_t flash_acr;              /* 0x4002 3C00 + 0x00 */
+		volatile std::uint32_t flash_keyr;             /* 0x4002 3C00 + 0x04 */
+		volatile std::uint32_t flash_optkeyr;          /* 0x4002 3C00 + 0x08 */
+		volatile std::uint32_t flash_sr;               /* 0x4002 3C00 + 0x0C */
+		volatile std::uint32_t flash_cr;               /* 0x4002 3C00 + 0x10 */
+		volatile std::uint32_t flash_optcr;            /* 0x4002 3C00 + 0x14 */
+		volatile std::uint32_t flash_reserve[2];       /* 0x4002 3C00 + 0x18 - 0xC */
+	} Flash_Register_Handle;
 
 	/* Standard frequency for STM32F407 Discovery Board */
 	constexpr std::uint32_t FREQUENCY_HSI          = (16000000);       /* 16MHz 16,000,000 Hz */
@@ -50,22 +96,25 @@ namespace bare_metal
 
 	/* Configuration for SysClock */
 	constexpr std::uint32_t RCC_BASE_ADDRESS       = (0x40023800);                  /* RCC Base Address Register */
-	constexpr std::uint32_t RCC_CR                 = (RCC_BASE_ADDRESS + 0x00);      /* (CR) Clock Control Register */
-	constexpr std::uint32_t RCC_PLLCFGR            = (RCC_BASE_ADDRESS + 0x04);     /* (PLLCFGR) PLL Configuration Register */
-	constexpr std::uint32_t RCC_CFGR               = (RCC_BASE_ADDRESS + 0x08);     /* (CFGR) Clock Configuration Register */
-	constexpr std::uint32_t RCC_CIR                = (RCC_BASE_ADDRESS + 0x0C);     /* (CIR) Clock Interrupt Register */
+	//constexpr std::uint32_t RCC_CR                 = (RCC_BASE_ADDRESS + 0x00);     /* (CR) Clock Control Register */
+	//constexpr std::uint32_t RCC_PLLCFGR            = (RCC_BASE_ADDRESS + 0x04);     /* (PLLCFGR) PLL Configuration Register */
+	//constexpr std::uint32_t RCC_CFGR               = (RCC_BASE_ADDRESS + 0x08);     /* (CFGR) Clock Configuration Register */
+	//constexpr std::uint32_t RCC_CIR                = (RCC_BASE_ADDRESS + 0x0C);     /* (CIR) Clock Interrupt Register */
 
 	/* To Enable Clock For Peripherals on AHB Bus */
-	constexpr std::uint32_t RCC_AHB1ENR            = (RCC_BASE_ADDRESS + 0x30);     /* (RCC_AHB1ENR) Clock Enable AHB1 */
-	constexpr std::uint32_t RCC_AHB2ENR            = (RCC_BASE_ADDRESS + 0x34);     /* (RCC_AHB2ENR) Clock Enable AHB2 */
-	constexpr std::uint32_t RCC_AHB3ENR            = (RCC_BASE_ADDRESS + 0x38);     /* (RCC_AHB3ENR) Clock Enable AHB3 */
+	//constexpr std::uint32_t RCC_AHB1ENR            = (RCC_BASE_ADDRESS + 0x30);     /* (RCC_AHB1ENR) Clock Enable AHB1 */
+	//constexpr std::uint32_t RCC_AHB2ENR            = (RCC_BASE_ADDRESS + 0x34);     /* (RCC_AHB2ENR) Clock Enable AHB2 */
+	//constexpr std::uint32_t RCC_AHB3ENR            = (RCC_BASE_ADDRESS + 0x38);     /* (RCC_AHB3ENR) Clock Enable AHB3 */
 
 	/* To Enable Clock For Peripherals on APB Bus */
-	constexpr std::uint32_t RCC_APB1ENR            = (RCC_BASE_ADDRESS + 0x40);     /* (RCC_APB1ENR) Clock Enable APB1 */
-	constexpr std::uint32_t RCC_APB2ENR            = (RCC_BASE_ADDRESS + 0x44);     /* (RCC_APB2ENR) Clock Enable APB2 */
+	//constexpr std::uint32_t RCC_APB1ENR            = (RCC_BASE_ADDRESS + 0x40);     /* (RCC_APB1ENR) Clock Enable APB1 */
+	//constexpr std::uint32_t RCC_APB2ENR            = (RCC_BASE_ADDRESS + 0x44);     /* (RCC_APB2ENR) Clock Enable APB2 */
 
 	/* Configuration for Flash Access Control Register */
-	constexpr std::uint32_t FLASH_ACR              = (0x40023C00);                  /* Flash Access Control Register */
+	constexpr std::uint32_t FLASH_BASE_ADDRESS     = (0x40023C00);                  /* Flash Access Control Register */
+
+	inline RCC_Register_Handle *RCC = reinterpret_cast<RCC_Register_Handle *>(RCC_BASE_ADDRESS);
+	inline Flash_Register_Handle *FLASH = reinterpret_cast<Flash_Register_Handle *>(FLASH_BASE_ADDRESS);
 
 	/* AHB Prescaler SysCLK / Prescaler = HCLK */
 	enum class Prescaler_AHB : std::uint32_t
